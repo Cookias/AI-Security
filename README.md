@@ -115,6 +115,24 @@ c_j = \sigma(W^fX_j+b^f)c_{j-1} + \sigma(W^iX_j+b^i)\sigma(WX_j+b)
 
 ---
 
+##### GRU
+> Gate Recurrent Unit，门循环单元，RNN的范畴，LSTM的变种，与LSTM一样都能保留历史记忆中的重要内容，保证在long-term中传播也能不丢失。  
+
+"We choose to use GRU in our experiment since it performs similarly to LSTM but is computationally **cheaper**"  
+简单来说，就是在实际环境下，GRU和LSTM的效果相差不大时，GRU能节省算力，提高效率，也就是能够降低成本。
+
+![GRU](https://pic1.zhimg.com/80/v2-8134a00c243153bfd9fd2bcbe0844e9c_hd.jpg)
+可以明显看出，GRU与LSTM最大区别在于每次只有一个值`$h^t$`进行传递，这样就少了几个矩阵运算，在训练数据集很大的情况下，GRU就会比LSTM节省很多时间。然而，GRU要和LSTM达到一样的效果，就需要`$h^t$`包含以前节点的记忆信息，又能生成选择性记忆的门控信号。  
+
+这里，主要由`$h^{t-1}$`和`$x^t$`生成`$r$`(reset)和`$z$`(update)两个门控信号。  
+
+`$r$`(reset)门控主要用来重置`$h^{t-1}$`，再与`$x^t$`进行运算，通过tanh激活函数后得到本次处理过的信息`$h^’$`。  
+`$z$`(update)门控则同时兼具了遗忘和记忆的功能：`$h^{t-1}$`与`$z$`进行运算表现为遗忘之前节点信息记忆；`$h^’$`与`$1-z$`进行运算表现为选择记忆当前节点信息。  
+
+所以，更新表达式为：`$h^t = z\cdot h^{t-1}+(1-z)\cdot h^’$` (z的范围为0~1。越接近0，对以前节点遗忘的越多，对当前节点记忆的越多；越接近1，对以前节点遗忘的越少，对当前节点记忆的越少)
+
+---
+
 ### 其他算法
 #### PCA
 #### K-means 
